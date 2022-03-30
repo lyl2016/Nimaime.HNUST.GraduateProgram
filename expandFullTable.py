@@ -2,8 +2,11 @@ import os
 from func import ProgressBar
 # 设定基准目录
 foldPath = "/Volumes/Seagate/下载/FinacialData/"
+if (os.path.isfile(foldPath + "AllInOne.csv")):
+    os.remove(foldPath + "AllInOne.csv")
 # 遍历股票代码
 stockCodes = os.listdir(foldPath)
+print("正在生成Expand表：")
 progress = ProgressBar(len(stockCodes), fmt=ProgressBar.FULL)
 for stockCode in stockCodes:
     # 表头 => 数据
