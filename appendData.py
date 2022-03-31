@@ -30,8 +30,7 @@ for stockCode in stockCodes:
     fullTableFileName = foldPath + stockCode + "/" + stockCode + "_full.csv"
     with open(fullTableFileName, "w", encoding='utf-8') as file2Write:
         for line in lines:
-            if (line.split(",")[1].strip().upper() != "NAN"):
-                file2Write.write(line)
+            file2Write.write(line)
 
     progress.current += 1
     progress()

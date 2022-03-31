@@ -4,6 +4,16 @@ from func import ProgressBar
 foldPath = "/Volumes/Seagate/下载/FinacialData/"
 if (os.path.isfile(foldPath + "AllInOne.csv")):
     os.remove(foldPath + "AllInOne.csv")
+
+# 处理的项目
+ItemsToDealList = [
+    "营业收入",
+    "净利润",
+    "固定资产",
+    "收取利息、手续费及佣金的现金",
+    "利润总额",
+]
+
 # 遍历股票代码
 stockCodes = os.listdir(foldPath)
 print("正在生成Expand表：")
@@ -26,6 +36,9 @@ for stockCode in stockCodes:
             cells = line.strip().upper().split(",")
             # 行首作为项目名称
             key = cells[0]
+            # 若项目名称不存在于处理的项目内则不压该行表
+            if (key not in ItemsToDealList):
+                continue
             keys.append(key)
             # 单行内所有值移除行首作为所有数据值
             cells.remove(key)
