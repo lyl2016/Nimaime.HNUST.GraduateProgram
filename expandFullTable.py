@@ -1,7 +1,7 @@
 import os
 from func import ProgressBar
 # 设定基准目录
-foldPath = "/Volumes/Seagate/下载/FinacialData/"
+foldPath = "/Users/liuyonglin/Desktop/毕业设计/FinacialData/"
 if (os.path.isfile(foldPath + "AllInOne.csv")):
     os.remove(foldPath + "AllInOne.csv")
 
@@ -12,6 +12,7 @@ ItemsToDealList = [
     "固定资产",
     "收取利息、手续费及佣金的现金",
     "利润总额",
+    "研发费用",
 ]
 
 # 遍历股票代码
@@ -47,6 +48,8 @@ for stockCode in stockCodes:
             seasonIndex = 0
             for value in values:
                 if (seasonIndex < len(seasons)):
+                    KeyValuePair[key + "_" + str(seasons[seasonIndex])[-6:-2]] = float(KeyValuePair.get(
+                        key + "_" + str(seasons[seasonIndex])[-6:-2], 0)) + float(value)
                     KeyValuePair[key + "_" + str(seasons[seasonIndex])] = value
                     seasonIndex += 1
 
@@ -59,7 +62,7 @@ for stockCode in stockCodes:
         expandTableValuesLine += str(stockCode)
         for key, value in KeyValuePair.items():
             expandTableHeadersLine += str("," + key)
-            expandTableValuesLine += str("," + value)
+            expandTableValuesLine += str("," + str(value))
         file2Write.writelines(expandTableHeadersLine + "\r\n")
         file2Write.writelines(expandTableValuesLine)
     progress.current += 1

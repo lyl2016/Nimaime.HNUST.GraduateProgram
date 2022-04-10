@@ -2,7 +2,7 @@
 import os
 from func import ProgressBar
 # 设定基准目录
-foldPath = "/Volumes/Seagate/下载/FinacialData/"
+foldPath = "/Users/liuyonglin/Desktop/毕业设计/FinacialData/"
 if (os.path.isfile(foldPath + "AllInOne.csv")):
     os.remove(foldPath + "AllInOne.csv")
 # 键值对列表（多个Full表的键值对字典构成的列表）
