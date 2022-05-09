@@ -1,9 +1,7 @@
 import os
 from func import ProgressBar
 # 设定基准目录
-foldPath = "/Users/liuyonglin/Desktop/毕业设计/FinacialData/"
-if (os.path.isfile(foldPath + "AllInOne.csv")):
-    os.remove(foldPath + "AllInOne.csv")
+foldPath = "/Users/liuyonglin/Desktop/毕业设计/"
 
 # 处理的项目
 ItemsToDealList = [
@@ -16,14 +14,16 @@ ItemsToDealList = [
 ]
 
 # 遍历股票代码
-stockCodes = os.listdir(foldPath)
+stockCodes = os.listdir(foldPath + "FinacialData/")
 print("正在生成Expand表：")
 progress = ProgressBar(len(stockCodes), fmt=ProgressBar.FULL)
 for stockCode in stockCodes:
+    if (stockCode[0] == '.'):
+        continue
     # 表头 => 数据
     KeyValuePair = {}
     # 将新生成的full表展开单行
-    fullTableFileName = foldPath + stockCode + "/" + stockCode + "_full.csv"
+    fullTableFileName = foldPath + "FinacialData/" + stockCode + "/" + stockCode + "_full.csv"
     with open(fullTableFileName, encoding='utf-8') as fullTable:
         headers = fullTable.readline().strip().split(",")
         headers.remove(headers[0])
@@ -50,12 +50,13 @@ for stockCode in stockCodes:
                 if (seasonIndex < len(seasons)):
                     KeyValuePair[key + "_" + str(seasons[seasonIndex])[-6:-2]] = float(KeyValuePair.get(
                         key + "_" + str(seasons[seasonIndex])[-6:-2], 0)) + float(value)
-                    KeyValuePair[key + "_" + str(seasons[seasonIndex])] = value
+                    # 是否输出各季度数据
+                    #KeyValuePair[key + "_" + str(seasons[seasonIndex])] = value
                     seasonIndex += 1
 
     expandTableHeadersLine = str()
     expandTableValuesLine = str()
-    fullExpandTableFileName = foldPath + stockCode + \
+    fullExpandTableFileName = foldPath + "FinacialData/" + stockCode + \
         "/" + stockCode + "_full_expand.csv"
     with open(fullExpandTableFileName, "w", encoding='gbk') as file2Write:
         expandTableHeadersLine += "股票代码"

@@ -2,19 +2,20 @@
 import os
 from func import ProgressBar
 # 设定基准目录
-foldPath = "/Users/liuyonglin/Desktop/毕业设计/FinacialData/"
-if (os.path.isfile(foldPath + "AllInOne.csv")):
-    os.remove(foldPath + "AllInOne.csv")
+foldPath = "/Users/liuyonglin/Desktop/毕业设计/"
+
 # 键值对列表（多个Full表的键值对字典构成的列表）
 KeyValuesPairs = []
 # 总表头
 AllKeys = []
 # 遍历股票代码
-stockCodes = os.listdir(foldPath)
+stockCodes = os.listdir(foldPath + "FinacialData/")
 print("正在读取Expand表：")
 progress = ProgressBar(len(stockCodes), fmt=ProgressBar.FULL)
 for stockCode in stockCodes:
-    fullExpandTableFileName = foldPath + stockCode + \
+    if (stockCode[0] == '.'):
+        continue
+    fullExpandTableFileName = foldPath + "FinacialData/" + stockCode + \
         "/" + stockCode + "_full_expand.csv"
     with open(fullExpandTableFileName, encoding='gbk') as fullExpandTable:
         KeyValuePair = {}
@@ -43,7 +44,10 @@ with open(AllInOneTableFileName, "w", encoding="gbk") as file2Write:
         file2Write.write(key + ",")
         progress.current += 1
         progress()
-    file2Write.write("\b\r\n")
+        
+    size = file2Write.tell()
+    file2Write.truncate(size - 1)
+    file2Write.write("\r\n")
     progress.done()
     # 按股票写所有值
     print("正在写入键值对：")
@@ -51,10 +55,13 @@ with open(AllInOneTableFileName, "w", encoding="gbk") as file2Write:
     for KeyValuePair in KeyValuesPairs:
         for key in AllKeys:
             if (key in dict(KeyValuePair)):
-                file2Write.write(KeyValuePair[key] + ",")
+                file2Write.write(str(KeyValuePair[key]).upper() + ",")
             else:
-                file2Write.write("NaN,")
-        file2Write.write("\b\r\n")
+                file2Write.write("NAN,")
+
+        size = file2Write.tell()
+        file2Write.truncate(size - 1)
+        file2Write.write("\r\n")
         progress.current += 1
         progress()
     progress.done()
