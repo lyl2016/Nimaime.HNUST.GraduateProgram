@@ -12,15 +12,10 @@ stockCodes = []
 # 处理的项目
 ItemsToDealList = [
     "营业收入",
-    "净利润",
-    "固定资产",
-    "收取利息、手续费及佣金的现金",
-    "利润总额",
-    "研发费用",
 ]
 # 年份
-years = ["2021", "2020", "2019", "2018", "2017", "2016",
-         "2015", "2014", "2013", "2012", "2011", "2010"]
+#years = ["2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010",] #12年数据1年1期
+years = ["2021", "2016", "2011",] #11年数据，5年1期
 
 print("正在读取 AllInOne.csv 文件中的数据...")
 with open(foldPath + "AllInOne.csv", encoding='gbk') as AllInOneFile:
@@ -40,7 +35,6 @@ with open(foldPath + "AllInOne.csv", encoding='gbk') as AllInOneFile:
             i += 1
             KeyValuesPairs.append(KeyValuePair)
 
-print("正在计算各指标各年间增长率数据...")
 with open(foldPath + "IncreaseRate.csv", "w", encoding='gbk') as file2Write:
     # 填充表头
     file2Write.write("股票代码")
@@ -48,12 +42,21 @@ with open(foldPath + "IncreaseRate.csv", "w", encoding='gbk') as file2Write:
         indexOfYears = 0
         for year in years:
             if (indexOfYears < len(years) - 1):
-                file2Write.write("," + key + "_" + years[indexOfYears + 1] + "~" + years[indexOfYears])
+                file2Write.write(
+                    "," + key + "_" + years[indexOfYears + 1] + "_" + years[indexOfYears] + "_R")
+                indexOfYears += 1
+    for key in ItemsToDealList:
+        indexOfYears = 0
+        for year in years:
+            if (indexOfYears < len(years) - 1):
+                file2Write.write(
+                    "," + key + "_" + years[indexOfYears + 1] + "_" + years[indexOfYears] + "_V")
                 indexOfYears += 1
     file2Write.write("\r\n")
     # 填充表头
 
-    # 计算增长率
+    # 计算增长
+    print("正在计算各指标各年间增长数据...")
     progress = ProgressBar(len(stockCodes), fmt=ProgressBar.FULL)
     for stockCode in stockCodes:
         file2Write.write(stockCode)
@@ -64,17 +67,32 @@ with open(foldPath + "IncreaseRate.csv", "w", encoding='gbk') as file2Write:
             IncreaseRate = {}
             for year in years:
                 if (indexOfYears < len(years) - 1):
-                    IncreaseRate[stockCode + "_" + key + "_" + years[indexOfYears + 1] + "~" + years[indexOfYears]] = str(\
-                        (float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears]]) - \
-                        float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears + 1]])) \
+                    IncreaseRate[stockCode + "_" + key + "_" + years[indexOfYears + 1] + "_" + years[indexOfYears]] = str(
+                        (float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears]]) -
+                         float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears + 1]]))
                         / float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears + 1]]) * 100) \
                         .upper()
                     IncreaseRates.append(IncreaseRate)
-                    file2Write.write("," + IncreaseRate[stockCode + "_" + key + "_" + years[indexOfYears + 1] + "~" + years[indexOfYears]])
+                    file2Write.write(
+                        "," + IncreaseRate[stockCode + "_" + key + "_" + years[indexOfYears + 1] + "_" + years[indexOfYears]])
+                    indexOfYears += 1
+        IncreaseValues = []
+        for key in ItemsToDealList:
+            indexOfYears = 0
+            IncreaseValue = {}
+            for year in years:
+                if (indexOfYears < len(years) - 1):
+                    IncreaseValue[stockCode + "_" + key + "_" + years[indexOfYears + 1] + "_" + years[indexOfYears]] = str(
+                        float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears]]) -
+                        float(KeyValuePair[stockCode + "_" + key + "_" + years[indexOfYears + 1]])).upper()
+                    IncreaseValues.append(IncreaseValue)
+                    file2Write.write(
+                        "," + IncreaseValue[stockCode + "_" + key + "_" + years[indexOfYears + 1] + "_" + years[indexOfYears]])
                     indexOfYears += 1
         file2Write.write("\r\n")
         progress.current += 1
         progress()
     progress.done()
-    # 计算增长率
+    # 计算增长
+
 print("已完成计算，数据已存入 IncreaseRate.csv 文件中")
