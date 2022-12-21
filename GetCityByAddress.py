@@ -17,7 +17,7 @@ with open(filename, encoding='utf-8') as csvfile:
         name = line.strip().split(",")[1]
         addressString = line.strip().split(",")[2]
         # http请求参数
-        p = {"key": "fd93bde9cbb20ec74a62efb0d9bbd9ea", "address": addressString}
+        p = {"key": "这也有人扫 爱用就用吧", "address": addressString}
         # print(addressString)
         httpResponse = requests.get(url, params=p)
         jsonDecodeResult = json.loads(httpResponse.text)
